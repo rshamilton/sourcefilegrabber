@@ -1,5 +1,5 @@
 # Source File Grabber
-A bookmarklet to grab files following a pattern. great for things like pulling a broken up document or a carousel of images off a website.
+A bookmarklet to grab files following a pattern. Great for things like pulling a broken-up document or a carousel of images off a website.
 
 ## Usage
 
