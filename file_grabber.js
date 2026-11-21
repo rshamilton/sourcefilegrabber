@@ -50,18 +50,21 @@ javascript:
     }
 
     //Runs file printer or file downloader
-    var print = confirm("Found " + matches.length + " matches. \nOK for download into PDF (more reliable for server blocks)\nCancel to download files");
-    if (print) {
+    var printMode = confirm("Found " + matches.length + " matches.\nOK for download into PDF (more reliable for server blocks)\nCancel to download files");
+    if (printMode) {
         filePrinter(matches);
         return;
     }
 
-    //File downlaoder
+    //File downloader
     //Creates an invisible link and clicks then it to download the file then it removes it
-    function saveLink(href, name) {
+    function saveLink(href, name, newTab) {
         var a = document.createElement('a');
         a.href = href;
         a.download = name;
+        if (newTab) {
+            a.target = '_blank';
+        }
         document.body.appendChild(a);
         a.click();
         a.remove();
@@ -78,7 +81,6 @@ javascript:
         frame.style.border = "0";
         document.body.appendChild(frame);
 
-
         var d = frame.contentDocument;
         d.open();
         d.write('<!doctype html><html><head><style>' +
@@ -89,6 +91,10 @@ javascript:
             '</style></head><body></body></html>'
         );
         d.close();
+
+        frame.contentWindow.onafterprint = function() {
+            frame.remove();
+        };
 
         var done = 0;
         function one() {
@@ -107,7 +113,6 @@ javascript:
             };
             img.src = file.url;
             d.body.appendChild(img);
-
         });
     }
     //File downloader with delay to hopefully not let files get lost
@@ -122,7 +127,7 @@ javascript:
                 })
                 .catch(function(err) {
                     console.warn("Fetch failed, using fallback:", file.url, err);
-                    saveLink(file.url, file.name);
+                    saveLink(file.url, file.name, true);
                 });
         }, i * 300);
     });
