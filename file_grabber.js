@@ -48,6 +48,15 @@ javascript:
         alert("No matches found. The pattern used was: " + pattern);
         return;
     }
+
+    //Runs file printer or file downloader
+    var print = confirm("Found " + matches.length + " matches. \nOK for download into PDF (more reliable for server blocks)\nCancel to download files");
+    if (print) {
+        filePrinter(matches);
+        return;
+    }
+
+    //File downlaoder
     //Creates an invisible link and clicks then it to download the file then it removes it
     function saveLink(href, name) {
         var a = document.createElement('a');
@@ -56,6 +65,47 @@ javascript:
         document.body.appendChild(a);
         a.click();
         a.remove();
+    }
+
+    //File printer
+    function filePrinter(matches) {
+        var frame = document.createElement("iframe");
+        frame.style.position = "fixed";
+        frame.style.right = "0";
+        frame.style.bottom = "0";
+        frame.style.width = "0";
+        frame.style.height = "0";
+        frame.style.border = "0";
+        document.body.appendChild(frame);
+
+
+        var d = frame.contentDocument;
+        d.open();
+        d.write('<html><head><style>' +
+            'img { display: block; width: 100%; page-break-after: always; }' +
+            '@page { margin: 0; }' +
+            '</style></head></html>');
+        d.close();
+
+        var done = 0;
+        function one() {
+            done++;
+            if (done === matches.length) {
+                frame.contentWindow.print();
+            }
+        }
+
+        matches.forEach(function(file) {
+            var img = d.createElement("img");
+            img.onload = one;
+            img.onerror = function() {
+                console.warn(file.url, "failed.");
+                one();
+            };
+            img.src = file.url;
+            d.body.appendChild(img);
+
+        });
     }
     //File downloader with delay to hopefully not let files get lost
     matches.forEach(function(file, i) {
