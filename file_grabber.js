@@ -24,8 +24,10 @@ javascript:
             urls.add(url);
         }
     });
+    performance.getEntriesByType('resource').forEach(function(entry) {
+        urls.add(entry.name);
+    });
     console.log(urls.size, Array.from(urls));
-
 
     var matches = [];
     urls.forEach(function(url) {
@@ -33,7 +35,9 @@ javascript:
             var decodedLink = decodeURIComponent(new URL(url).pathname.split('/').pop());
             var m = decodedLink.match(pattern);
             if (m) {
-                matches.push({url: url, name: decodedLink, index: parseInt(m[1], 10)});
+                if (!matches.some(function(match) { return match.name === decodedLink; })) {
+                    matches.push({url: url, name: decodedLink, index: parseInt(m[1], 10)});
+                }
             }
         } catch (e) {} //For bad urls
     });
@@ -53,7 +57,7 @@ javascript:
         a.click();
         a.remove();
     }
-
+    //File downloader with delay to hopefully not let files get lost
     matches.forEach(function(file, i) {
         setTimeout(function() {
             fetch(file.url)
@@ -69,5 +73,4 @@ javascript:
                 });
         }, i * 300);
     });
-
 })();
