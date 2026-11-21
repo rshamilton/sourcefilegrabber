@@ -71,20 +71,23 @@ javascript:
     function filePrinter(matches) {
         var frame = document.createElement("iframe");
         frame.style.position = "fixed";
-        frame.style.right = "0";
-        frame.style.bottom = "0";
-        frame.style.width = "0";
-        frame.style.height = "0";
+        frame.style.right = "-10000px";
+        frame.style.top = "0";
+        frame.style.width = "8.5in";
+        frame.style.height = "11in";
         frame.style.border = "0";
         document.body.appendChild(frame);
 
 
         var d = frame.contentDocument;
         d.open();
-        d.write('<html><head><style>' +
-            'img { display: block; width: 100%; page-break-after: always; }' +
-            '@page { margin: 0; }' +
-            '</style></head></html>');
+        d.write('<!doctype html><html><head><style>' +
+            '@page { size: letter; margin: 0.25in; }' +
+            'html, body { margin: 0; padding: 0; }' +
+            'img { display: block; width: 100%; height: 9.25in; object-fit: contain; page-break-after: always; break-after: page; }' +
+            'img:last-child { page-break-after: auto; break-after: auto; }' +
+            '</style></head><body></body></html>'
+        );
         d.close();
 
         var done = 0;
