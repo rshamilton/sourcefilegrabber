@@ -40,4 +40,34 @@ javascript:
 
     matches.sort(function(a, b) { return a.index - b.index; });
     console.log(matches);
+    if (matches.length === 0) {
+        alert("No matches found. The pattern used was: " + pattern);
+        return;
+    }
+    //Creates an invisible link and clicks then it to download the file then it removes it
+    function saveLink(href, name) {
+        var a = document.createElement('a');
+        a.href = href;
+        a.download = name;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+    }
+
+    matches.forEach(function(file, i) {
+        setTimeout(function() {
+            fetch(file.url)
+                .then(function(r) { return r.blob(); })
+                .then(function(blob) {
+                    var localf = URL.createObjectURL(blob);
+                    saveLink(localf, file.name);
+                    setTimeout(function() { URL.revokeObjectURL(localf); }, 1000);
+                })
+                .catch(function(err) {
+                    console.warn("Fetch failed, using fallback:", file.url, err);
+                    saveLink(file.url, file.name);
+                });
+        }, i * 300);
+    });
+
 })();
