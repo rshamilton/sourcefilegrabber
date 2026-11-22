@@ -17,5 +17,5 @@ A bookmarklet to grab files following a pattern. Great for things like pulling a
 3. Enter your pattern
 4. Choose to export as a PDF or try to download normally
     - PDF downloads put the files into an iframe off screen, then print them
-    - Normal downloads download the actual files, but won't work if the server prevent JavaScript from reading the actual bytes
+    - Normal downloads download the actual files, but won't work if the server prevents JavaScript from reading the actual bytes
 
